@@ -1,0 +1,254 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Dashboard.master.cs" Inherits="Quiz_Management_System.Dashboard" %>
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <script type="text/javascript">
+        window.history.forward();
+        function noBack()
+        {
+            window.history.forward();
+        }
+        window.onload = noBack;
+        window.onpageshow = function (evt)
+        {
+            if (evt.persisted) noBack();
+        };
+        window.onunload = function ()
+        {
+            void (0);
+        };
+    </script>
+
+    <script>
+        // Show loading overlay during postback
+        function showLoader() {
+            var loader = document.getElementById("pageLoader");
+            if (loader) loader.style.display = "flex";
+        }
+
+        function hideLoader() {
+            var loader = document.getElementById("pageLoader");
+            if (loader) loader.style.display = "none";
+        }
+
+        // ASP.NET AJAX lifecycle hooks
+        if (typeof Sys !== "undefined") {
+            Sys.WebForms.PageRequestManager.getInstance().add_beginRequest(function () {
+                showLoader();
+            });
+
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                hideLoader();
+            });
+        }
+    </script>
+
+    <title>QMS - Quiz Management System</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="~/CSS/Dashboard.css" rel="stylesheet" />
+</head>
+
+<form id="form1" runat="server" enctype="multipart/form-data">
+     <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true" />
+    
+    <!-- Loading Overlay -->
+    <div id="pageLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div style="color:white; font-size:24px;">
+            <i class="fas fa-spinner fa-spin"></i> Loading...
+        </div>
+    </div>
+
+    <!-- Mobile Menu Toggle Button -->
+    <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><i class="fas fa-brain"></i></div>
+            <div class="app-name">QMS</div>
+            <div class="app-tagline">Quiz Management System</div>
+        </div>
+
+        <div class="sidebar-nav">
+            <div class="nav-item">
+                <a href='<%= ResolveUrl("~/Content.aspx") %>'>
+                    <i class="fas fa-house"></i><span>Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href='<%= ResolveUrl("~/Pages/UserAdmin.aspx") %>'>
+                    <i class="fas fa-users-cog"></i><span>User Management</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href='<%= ResolveUrl("~/Pages/Quiz.aspx") %>'>
+                    <i class="fas fa-brain"></i><span>Quiz</span>
+                </a>
+            </div>
+
+            <!-- Question Bank Parent -->
+            <div class="nav-item parent-menu-item">
+                <a href="javascript:void(0);" class="parent-menu" onclick="toggleSubMenu(event, this)">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Question Bank</span>
+                    <i class="fas fa-chevron-down submenu-arrow"></i>
+                </a>
+
+                <!-- Submenu -->
+                <div class="submenu">
+                    <div class="nav-item">
+                        <a href='<%= ResolveUrl("~/Questions.aspx") %>' class="submenu-item">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Questions</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href='<%= ResolveUrl("~/Excel.aspx") %>' class="submenu-item">
+                            <i class="fas fa-file-excel"></i>
+                            <span>Upload ExcelSheet</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-item">
+                <a href='<%= ResolveUrl("~/QuizWiseQuestions.aspx") %>'>
+                    <i class="fas fa-clipboard-list"></i><span>QuizWiseQuestions</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href='<%= ResolveUrl("~/AdminResult.aspx") %>'>
+                    <i class="fas fa-chart-bar"></i><span>Results & Analytics</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Header -->
+    <div class="topnav">
+        <div class="nav-left">
+            <div>
+                <div class="top-title">QMS</div>
+                <div class="top-subtitle">Quiz Management System</div>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <div class="header-user-wrapper">
+                <!-- USER INFO DROPDOWN -->
+                <div class="header-user" onclick="toggleProfileDropdown(event)">
+                    <div class="header-avatar">
+                        <asp:Label ID="lblInitial" runat="server"></asp:Label>
+                    </div>
+                    <div class="header-username">
+                        <asp:Label ID="lblUser" runat="server"></asp:Label>
+                        <i class="fas fa-chevron-down" style="margin-left: 8px; font-size: 12px;"></i>
+                    </div>
+                    
+                    <!-- DROPDOWN MENU -->
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href='<%= ResolveUrl("~/AdminProfile.aspx") %>' class="dropdown-item">
+                            <i class="fas fa-user-circle"></i> Profile
+                        </a>
+                        <asp:LinkButton ID="btnLogout" runat="server" OnClick="btnLogout_Click" CssClass="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </asp:LinkButton>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <asp:UpdatePanel ID="updMain" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+            </ContentTemplate>
+        </asp:UpdatePanel>
+    </div>
+    
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <asp:Label ID="lblSessionStatus" runat="server" ForeColor="Red" Font-Bold="true"></asp:Label>
+
+</form>
+    <script>
+        function toggleSubMenu(event, element) {
+            event.preventDefault();
+            var parent = element.parentElement;
+            var submenu = parent.querySelector('.submenu');
+            var expanded = element.getAttribute('aria-expanded') === 'true';
+
+            if (expanded) {
+                submenu.style.display = 'none';
+                element.setAttribute('aria-expanded', 'false');
+            } else {
+                submenu.style.display = 'flex';
+                element.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        // Mobile menu toggle functionality
+        function toggleProfileDropdown(event) {
+            event.stopPropagation();
+            var dropdown = document.getElementById("profileDropdown");
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            } else {
+                dropdown.style.display = "block";
+            }
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            var dropdown = document.getElementById("profileDropdown");
+            var headerUser = document.querySelector(".header-user");
+            if (dropdown && dropdown.style.display === "block" && !headerUser.contains(event.target)) {
+                dropdown.style.display = "none";
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            if (mobileMenuToggle && sidebar) {
+                mobileMenuToggle.addEventListener('click', function () {
+                    sidebar.classList.toggle('sidebar-open');
+                    mobileMenuToggle.innerHTML = sidebar.classList.contains('sidebar-open')
+                        ? '<i class="fas fa-times"></i>'
+                        : '<i class="fas fa-bars"></i>';
+                });
+
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', function (event) {
+                    if (window.innerWidth <= 992) {
+                        if (!sidebar.contains(event.target) &&
+                            !mobileMenuToggle.contains(event.target) &&
+                            sidebar.classList.contains('sidebar-open')) {
+                            sidebar.classList.remove('sidebar-open');
+                            mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                        }
+                    }
+                });
+
+                // Close sidebar when window is resized to desktop size
+                window.addEventListener('resize', function () {
+                    if (window.innerWidth > 992) {
+                        sidebar.classList.remove('sidebar-open');
+                        mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

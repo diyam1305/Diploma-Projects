@@ -1,0 +1,174 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="UserDashboard.master.cs" Inherits="Quiz_Management_System.User.UserDashboard" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <asp:ContentPlaceHolder ID="TitleContent" runat="server">User Dashboard - QMS Quiz System</asp:ContentPlaceHolder>
+    </title>
+    <script type="text/javascript">
+        window.history.forward();
+        function noBack()
+        {
+            window.history.forward();
+        }
+        window.onload = noBack;
+        window.onpageshow = function (evt)
+        {
+            if (evt.persisted) noBack();
+        };
+        window.onunload = function ()
+        {
+            void (0);
+        };
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="~/CSS/UserDashboard.css?v=2" rel="stylesheet" />
+</head>
+
+<body>
+    <form runat="server">
+        <!-- HEADER -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="logo-text">QMS Quiz</div>
+                </div>
+                <div class="header-title">User Dashboard</div>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-user-wrapper">
+                    <!-- USER INFO DROPDOWN -->
+                    <div class="header-user" onclick="toggleProfileDropdown(event)">
+                        <div class="header-avatar">
+                            <asp:Label ID="lblInitial" runat="server"></asp:Label>
+                        </div>
+                        <div class="header-username">
+                            <asp:Label ID="lblUser" runat="server"></asp:Label>
+                            <i class="fas fa-chevron-down" style="margin-left: 8px; font-size: 12px;"></i>
+                        </div>
+                        
+                        <!-- DROPDOWN MENU -->
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <a href='<%= ResolveUrl("~/UserProfile.aspx") %>' class="dropdown-item">
+                                <i class="fas fa-user-circle"></i> Profile
+                            </a>
+                            <asp:LinkButton ID="btnLogout" runat="server" OnClick="btnLogout_Click" CssClass="dropdown-item logout">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </asp:LinkButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <div class="dashboard-container">
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <div class="section-title">
+                        <i class="fas fa-th-large"></i>
+                        Dashboard Menu
+                    </div>
+                    <div class="nav-items">
+                        <a href="UserContentPage.aspx" class="nav-item active">
+                            <span class="nav-icon"><i class="fas fa-home"></i></span>
+                            <span>Home</span>
+                        </a>
+                        <a href="UserRecentActivity.aspx" class="nav-item">
+                            <span class="nav-icon"><i class="fas fa-history"></i></span>
+                            <span>Recent Activity</span>
+                        </a>
+                        <a href="UserProfile.aspx" class="nav-item">
+                            <span class="nav-icon"><i class="fas fa-user"></i></span>
+                            <span>Profile</span>
+                        </a>
+                        <a href="UserAboutUs.aspx" class="nav-item">
+                            <span class="nav-icon"><i class="fas fa-users"></i></span>
+                            <span>Meet Our team</span>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+            <!--Main Content-->
+            <main class="main-content">
+                <asp:ContentPlaceHolder ID="MainContent" runat="server">
+                    <div class="content-header">
+                        <h1 class="page-title">Welcome to Your Dashboard</h1>
+                        <p class="page-subtitle">Select an option from the menu to get started.</p>
+                    </div>
+                </asp:ContentPlaceHolder>
+            </main>
+        </div>
+        
+        <script>
+            // Add interactivity
+            document.addEventListener('DOMContentLoaded', function () {
+                // File card click handlers 
+                document.querySelectorAll('.file-card').forEach(card => {
+                    card.addEventListener('click', function () {
+                        console.log('File clicked:', this.querySelector('.file-name').textContent);
+                    });
+                });
+
+                // View option buttons 
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+
+                // Search functionality
+                const searchInput = document.querySelector('.search-input');
+                if (searchInput) {
+                    searchInput.addEventListener('input', function (e) {
+                        console.log('Searching for:', e.target.value);
+                    });
+                }
+
+                // Set active nav item based on current URL
+                const currentUrl = window.location.pathname.split('/').pop();
+                const navItems = document.querySelectorAll('.nav-item');
+
+                navItems.forEach(item => {
+                    const href = item.getAttribute('href');
+                    if (href && href.includes(currentUrl)) {
+                        // Remove active class from all items
+                        navItems.forEach(nav => nav.classList.remove('active'));
+                        // Add active class to current item
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            function toggleProfileDropdown(event) {
+                event.stopPropagation();
+                var dropdown = document.getElementById("profileDropdown");
+                if (dropdown.style.display === "block") {
+                    dropdown.style.display = "none";
+                } else {
+                    dropdown.style.display = "block";
+                }
+            }
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                var dropdown = document.getElementById("profileDropdown");
+                var headerUser = document.querySelector(".header-user");
+                if (dropdown && dropdown.style.display === "block" && !headerUser.contains(event.target)) {
+                    dropdown.style.display = "none";
+                }
+            });
+        </script>
+    </form>
+</body>
+</html>
