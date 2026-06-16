@@ -1,0 +1,476 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0c1b33 0%, #1a237e 25%, #311b92 50%, #4a148c 75%, #6a1b9a 100%);
+}
+
+/* Real Mountain Background */
+.mountain-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    overflow: hidden;
+}
+
+/* Base layer with real mountain image effect */
+.mountain-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to bottom, rgba(12, 27, 51, 0.8), rgba(26, 35, 126, 0.9)), url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+    background-size: cover;
+    background-position: center bottom;
+    background-blend-mode: overlay;
+    filter: brightness(0.7) contrast(1.2) hue-rotate(-10deg);
+}
+
+.mountain-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to bottom, transparent, rgba(49, 27, 146, 0.4)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+    background-size: cover;
+    background-position: center 70%;
+    background-blend-mode: soft-light;
+    opacity: 0.6;
+    mix-blend-mode: screen;
+}
+
+/* Lake/Water Reflection */
+.lake-reflection {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, rgba(30, 40, 120, 0.3) 20%, rgba(50, 60, 160, 0.7) 60%, rgba(70, 80, 200, 0.9) 100%);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: inset 0 10px 30px rgba(255, 255, 255, 0.3), inset 0 -10px 30px rgba(0, 0, 60, 0.5);
+}
+
+/* Water waves */
+.water-waves {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 15px;
+}
+
+.wave {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2));
+    border-radius: 50% 50% 0 0;
+    animation: waveMotion 4s infinite ease-in-out;
+}
+
+.wave-1 {
+    animation-delay: 0s;
+}
+
+.wave-2 {
+    bottom: 3px;
+    opacity: 0.6;
+    animation-delay: 2s;
+    height: 12px;
+}
+
+/* Moon */
+.moon {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 230, 0.95) 0%, rgba(230, 230, 255, 0.9) 30%, rgba(200, 200, 255, 0.7) 70%, transparent 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(200, 200, 255, 0.9), 0 0 50px rgba(180, 180, 255, 0.6), 0 0 80px rgba(160, 160, 255, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.4);
+    filter: blur(1px);
+    z-index: -1;
+}
+
+/* Moonlight glow on water */
+.moonlight-glow {
+    position: absolute;
+    top: -60px;
+    right: 5%;
+    width: 180px;
+    height: 100px;
+    background: radial-gradient(ellipse at center, rgba(200, 200, 255, 0.25), transparent 70%);
+    filter: blur(20px);
+    z-index: -1;
+}
+
+/* Stars overlay */
+.stars-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.8) 0%, transparent 100%), radial-gradient(3px 3px at 40% 70%, rgba(255, 255, 255, 0.9) 0%, transparent 100%), radial-gradient(2px 2px at 60% 20%, rgba(255, 255, 255, 0.7) 0%, transparent 100%), radial-gradient(3px 3px at 80% 40%, rgba(255, 255, 255, 0.9) 0%, transparent 100%), radial-gradient(2px 2px at 30% 80%, rgba(255, 255, 255, 0.7) 0%, transparent 100%), radial-gradient(3px 3px at 70% 60%, rgba(255, 255, 255, 0.9) 0%, transparent 100%);
+    background-size: 100% 100%;
+    animation: twinkle 4s infinite alternate;
+    z-index: -1;
+}
+
+/* Fog/Mist effect */
+.mountain-mist {
+    position: absolute;
+    bottom: 120px;
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(to top, transparent, rgba(150, 150, 255, 0.2) 30%, transparent 100%);
+    filter: blur(25px);
+    animation: mistFloat 15s infinite ease-in-out;
+    z-index: -1;
+}
+
+/* Glass Container  */
+.glass-container {
+    width: 100%;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 60px rgba(106, 27, 154, 0.25), inset 0 0 30px rgba(255, 255, 255, 0.05);
+    padding: 20px 25px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.register-icon {
+    width: 55px;
+    height: 55px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 28px;
+}
+
+/* Header - COMPACT */
+.register-header {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.register-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 4px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.register-subtitle {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+}
+
+/* Form Groups*/
+.form-group {
+    margin-bottom: 12px;
+}
+
+/* LABELS */
+.form-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+/* Input wrapper for icons */
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #1565c0;
+    font-size: 14px;
+    z-index: 2;
+}
+
+/* TEXTBOXES */
+.form-input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'Poppins', sans-serif;
+    color: #333333 !important;
+    transition: all 0.3s ease;
+    height: 38px;
+}
+
+    .form-input::placeholder {
+        color: #999999;
+        font-size: 12px;
+    }
+
+    .form-input:focus {
+        outline: none;
+        background: #ffffff !important;
+        box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.25);
+    }
+
+/* PASSWORD FIELD WITH TOGGLE */
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 3;
+}
+
+    .password-toggle:hover {
+        color: #1565c0;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+/* PASSWORD HINT */
+.password-hint {
+    margin-top: 3px;
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.3;
+    padding-left: 2px;
+}
+
+/* REGISTER BUTTON */
+.register-btn {
+    width: 100%;
+    padding: 11px;
+    background: linear-gradient(135deg, #0d47a1, #1565c0);
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 14px;
+    margin-bottom: 12px;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(13, 71, 161, 0.25);
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+}
+
+    .register-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(13, 71, 161, 0.35);
+        background: linear-gradient(135deg, #1565c0, #0d47a1);
+    }
+
+/* FOOTER */
+.register-footer {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 12px;
+    padding-top: 12px;
+    padding-bottom: 5px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.login-link {
+    color: #64b5f6;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 4px;
+    transition: all 0.3s ease;
+}
+
+    .login-link:hover {
+        color: #90caf9;
+        text-decoration: underline;
+        text-shadow: 0 0 6px rgba(100, 181, 246, 0.4);
+    }
+
+/* MESSAGE LABEL */
+.message-label {
+    background: rgba(231, 76, 60, 0.15);
+    border-left: 3px solid #e74c3c;
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    margin-bottom: 12px;
+    display: none;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+    .message-label.show {
+        display: block !important;
+    }
+
+    .message-label.success {
+        background: rgba(46, 204, 113, 0.15);
+        border-left: 3px solid #2ecc71;
+    }
+
+    .message-label.warning {
+        background: rgba(241, 196, 15, 0.15);
+        border-left: 3px solid #f1c40f;
+    }
+
+/* FORM VALIDATION STYLES */
+.form-input.error {
+    border: 2px solid #e74c3c !important;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2) !important;
+}
+
+.form-input.success {
+    border: 2px solid #2ecc71 !important;
+    box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2) !important;
+}
+
+.field-error {
+    color: #ff6b6b;
+    font-size: 9px;
+    margin-top: 3px;
+    padding-left: 2px;
+}
+
+/* ANIMATIONS */
+@keyframes waveMotion {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes mistFloat {
+    0%, 100% {
+        opacity: 0.2;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes twinkle {
+    0% {
+        opacity: 0.3;
+    }
+
+    100% {
+        opacity: 0.8;
+    }
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+    body {
+        padding: 8px;
+    }
+
+    .glass-container {
+        padding: 18px 22px;
+        max-width: 100%;
+    }
+
+    .register-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 26px;
+    }
+
+    .register-title {
+        font-size: 20px;
+    }
+
+    .register-subtitle {
+        font-size: 11px;
+    }
+
+    .form-input {
+        height: 36px;
+    }
+
+    .register-btn {
+        height: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .glass-container {
+        padding: 16px 20px;
+    }
+
+    .register-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+    }
+
+    .register-title {
+        font-size: 18px;
+    }
+}
+
+@supports not (backdrop-filter: blur(20px)) {
+    .glass-container {
+        background: rgba(26, 35, 126, 0.92);
+    }
+}
